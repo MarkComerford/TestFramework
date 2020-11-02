@@ -4,12 +4,8 @@ import java.io.File;
 
 import org.testng.annotations.Test;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import api.models.requests.customers.*;
 import utils.commonUtils;
-import Basic.TestSetup;
 import api.libraries.Customers;
 
 public class CreateCustomers  {

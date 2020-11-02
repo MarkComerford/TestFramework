@@ -21,7 +21,7 @@ public class GetSalesOrders {
 	
   commonUtils utils = new commonUtils();
 	
-  @Test (groups = {"Main1"})
+  @Test (groups = {"Main"})
   public void Get_Sales_Orders(Method method) throws JsonProcessingException {
 	  ExtentTestManager.startTest(method.getName(), "Get Sales Orders test");
 	  

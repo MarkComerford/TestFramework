@@ -3,7 +3,6 @@ package SampleTests;
 import org.json.JSONObject;
 import org.testng.annotations.Test;
 
-import Basic.TestSetup;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;

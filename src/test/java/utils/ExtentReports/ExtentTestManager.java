@@ -13,7 +13,7 @@ import java.util.Map;
  * At getTest() method, return ExtentTest instance in extentTestMap by using current thread id.
  */
 public class ExtentTestManager {
-    static Map extentTestMap = new HashMap();
+    static Map<Integer, ExtentTest> extentTestMap = new HashMap<>();
     static ExtentReports extent = ExtentManager.getReporter();
  
     public static synchronized ExtentTest getTest() {
