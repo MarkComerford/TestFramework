@@ -7,23 +7,34 @@ import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 
 import org.json.JSONObject;
-
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.testng.annotations.BeforeSuite;
+import org.apache.commons.io.FileUtils;
 
 public class TestSetup {
 
 	public static String token;
 	
-	private Properties prop = new Properties();
+	public static Properties prop = new Properties();
 	
 	public static RequestSpecBuilder builder;
     public static RequestSpecification requestSpec;
+    
+    public static WebDriver browser = null;
 	
 	@Parameters({"properties-file"}) 
 	@BeforeSuite(alwaysRun=true) 
@@ -43,6 +54,34 @@ public class TestSetup {
 		
 		token =	generateLoginToken();
 		
+	}
+	
+	@Parameters({"properties-file"})
+	@BeforeSuite (groups = {"ui"})
+	public void driverSetup(String properties_file) {
+		try (InputStream propFile = new FileInputStream("src/test/resources/config/" + properties_file)) {
+			
+			prop.load(propFile);
+			
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		}
+		
+		 System.setProperty("webdriver.chrome.driver","src/test/resources/Drivers/chromedriver.exe"); 
+		 ChromeOptions options = new ChromeOptions();
+		 System.out.println(prop.getProperty("headless"));
+		 if(prop.getProperty("headless").equals("true")) {
+			 options.addArguments("--headless","--window-size=1920,1080");
+		 }
+		 options.addArguments("--start-maximized");
+		 browser = new ChromeDriver(options);
+		 browser.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+	}
+	
+	@AfterSuite  (groups = {"ui"})
+	public void driverTeardown() {
+		System.out.println("Quitting driver...");
+		browser.quit();
 	}
 	
 	public static RequestSpecification getRequestSpec() {
@@ -78,5 +117,16 @@ public class TestSetup {
 
 		return token;
 
+	}
+	
+	public static String getScreenshot(WebDriver driver, String screenshotName) throws Exception {
+		String dateName = new SimpleDateFormat("yyyyMMddhhmmss").format(new Date());
+		TakesScreenshot ts = (TakesScreenshot) driver;
+		File source = ts.getScreenshotAs(OutputType.FILE);
+                //after execution, you could see a folder "FailedTestsScreenshots" under src folder
+		String destination = System.getProperty("user.dir") + "/FailedTestsScreenshots/"+screenshotName+dateName+".png";
+		File finalDestination = new File(destination);
+		FileUtils.copyFile(source, finalDestination);
+		return destination;
 	}
 }

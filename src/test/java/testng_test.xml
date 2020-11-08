@@ -12,6 +12,7 @@
   	<parameter name="properties-file" value="branch.properties" /> 
   	<test name="all-packages">
     	<packages>
+    		<package name="api.GenerateData.*"/>
     		<package name="Basic.*"/>
         	<package name="api.tests.*"/>
     	</packages>

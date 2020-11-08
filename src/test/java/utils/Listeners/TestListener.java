@@ -43,6 +43,15 @@ public class TestListener extends TestSetup implements ITestListener {
         //ExtentReports log and screenshot operations for failed tests.
         ExtentTestManager.getTest().log(LogStatus.FAIL, "Test Failed");
         ExtentTestManager.getTest().log(LogStatus.FAIL,iTestResult.getThrowable().toString());
+        if(browser != null) {
+	        try {
+				String screenshotPath = TestSetup.getScreenshot(browser, iTestResult.getName());
+				ExtentTestManager.getTest().log(LogStatus.FAIL, ExtentTestManager.getTest().addScreenCapture(screenshotPath));
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	    }
     }
  
     @Override
